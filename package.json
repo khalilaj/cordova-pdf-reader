@@ -1,0 +1,30 @@
+{
+  "version": "0.3.0",
+  "name": "edu.strathmore.subs.smupdf",
+  "cordova_name": "SUBSMuPDFIntegration",
+  "description": "Document viewer phonegap plugin.\r\n        Currently supports PDF Documents on Android.\r\n    ",
+  "license": "MIT",
+  "platforms": [
+    "android"
+  ],
+  "repository": {
+    "type": "git",
+    "url":  ""
+  },
+  "author": "Kinyua Wallace",
+  "license": "MIT",
+  "bugs": {
+    "url": ""
+  },
+  "homepage":  "#",
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.7.0"
+    }
+  ]
+}

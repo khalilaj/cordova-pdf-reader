@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="edu.strathmore.subs.smupdf" version="1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>SUBSMuPDFIntegration</name>
+    <author>Samwel Naftal Wamaya</author>
+    <email>samwel.naftali@strathmore.edu</email>
+    <license>MIT</license>
+    <engines>
+        <engine name="cordova" version=">=3.7.0"/>
+    </engines>
+    <description>Document viewer plugin to integrate mupdf with cordova. Currently supports android</description>
+
+    <js-module name="MupdfIntegration" src="www/SUBSMuPDFIntegration.js">
+        <clobbers target="cordova.plugins.SUBSMuPDFIntegration" />
+        <clobbers target="SUBSMuPDFIntegration"/>
+    </js-module>
+
+    <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="SUBSMuPDFIntegration">
+                <param name="android-package" value="edu.strathmore.subs.smupdf.SUBSMuPDFIntegration" />
+            </feature>
+        </config-file>
+
+        <config-file parent="/*" target="AndroidManifest.xml">
+        </config-file>
+
+        <source-file src="src/android/edu/strathmore/subs/smupdf/SUBSMuPDFIntegration.java" target-dir="src/edu/strathmore/subs/smupdf" />
+
+        <source-file src="src/android/edu/strathmore/subs/viewer/Annotation.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/ArrayDeque.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/AsyncTask.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/CancellableAsyncTask.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/CancellableTaskDefinition.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/ChoosePDFActivity.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/ChoosePDFAdapter.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/ChoosePDFItem.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/Deque.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/FilePicker.java" target-dir="src/edu/strathmore/subs/viewer" />
+
+        <source-file src="src/android/edu/strathmore/subs/viewer/LinkInfo.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/LinkInfoExternal.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/LinkInfoInternal.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/LinkInfoRemote.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/LinkInfoVisitor.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFActivity.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFAlert.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFAlertInternal.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFCancellableTaskDefinition.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFCore.java" target-dir="src/edu/strathmore/subs/viewer" />
+
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFPageAdapter.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFPageView.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFReaderView.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFReflowAdapter.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFReflowView.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/MuPDFView.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/OutlineActivity.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/OutlineActivityData.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/OutlineAdapter.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/OutlineItem.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/PageView.java" target-dir="src/edu/strathmore/subs/viewer" />
+
+        <source-file src="src/android/edu/strathmore/subs/viewer/PrintDialogActivity.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/ReaderView.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/SafeAnimatorInflater.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/SearchTask.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/SearchTaskResult.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/Separation.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/Stepper.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/TextChar.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/TextWord.java" target-dir="src/edu/strathmore/subs/viewer" />
+        <source-file src="src/android/edu/strathmore/subs/viewer/WidgetType.java" target-dir="src/edu/strathmore/subs/viewer" />
+
+    </platform>
+
+</plugin>
