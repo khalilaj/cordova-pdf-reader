@@ -48,14 +48,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 
-import com.facebook.crypto.Crypto;
-import com.facebook.crypto.Entity;
-import com.facebook.crypto.exception.CryptoInitializationException;
-import com.facebook.crypto.exception.KeyChainException;
-import com.facebook.android.crypto.keychain.SharedPrefsBackedKeyChain;
-import com.facebook.crypto.util.SystemNativeCryptoLibrary;
-
-
 import edu.strathmore.subs.R;
 
 class ThreadPerTaskExecutor implements Executor {
@@ -75,12 +67,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 	private final int    FILEPICK_REQUEST=2;
 	private final int    PROOF_REQUEST=3;
 
-	public static final String ENCRYPT_ACTION = "encrypt";
-	public static final String DECRYPT_ACTION = "decrypt";
-
-	private Context CONTEXT;
-	private Crypto CRYPTO;
-	private Entity ENTITY;
 
 	private OutputStream OUTPUT_STREAM;
 	private InputStream INPUT_STREAM;
@@ -127,11 +113,10 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 	private FilePicker mFilePicker;
 	private String     mProofFile;
 	private boolean mSepEnabled[][];
+
 	/*Custom variables*/
 	private boolean isBackButtonPressed = false;
-	private String superSecretKey = "";
 	private String docPath = "";
-	private boolean encFileStat = false;
 	private boolean exitedSomeOtherWay = false;
 
 	static private AlertDialog.Builder gAlertBuilder;
@@ -387,13 +372,7 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 						return;
 					}
 				}
-				//get our key
 
-				String vungoro = intent.getStringExtra("vungoro");
-				boolean filestat = intent.getBooleanExtra("filestat",false);
-
-				this.superSecretKey = vungoro;
-				this.encFileStat = filestat;
 
 				if (buffer != null) {
 					core = openBuffer(buffer, intent.getType());
@@ -1447,182 +1426,20 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 
 	@Override
 	protected void onResume(){
-		//we decrypt the file here
-		if(  this.exitedSomeOtherWay && this.encFileStat && this.superSecretKey != ""){
-			this.cryptOp(this.docPath, this.superSecretKey, DECRYPT_ACTION);
-			this.exitedSomeOtherWay = false;
-		}
-
 		super.onResume();
-	}
-
-	/**
-	 * Init Crypto
-	 * @param path
-	 * @param password
-     */
-	private void initCrypto(String path, String password) {
-		if (path != null && path.length() > 0 && password != null && password.length() > 0) {
-			SOURCE_URI  = Uri.parse(path);
-			FILE_NAME = SOURCE_URI.getLastPathSegment();
-
-			ENTITY = new Entity(password);
-
-			SOURCE_FILE = new File(SOURCE_URI.getPath());
-
-			// initialize crypto object
-			CRYPTO = new Crypto(new SharedPrefsBackedKeyChain(this), new SystemNativeCryptoLibrary());
-
-			// check for whether crypto is available
-			if (!CRYPTO.isAvailable()) {
-				return;
-			}
-
-			try {
-				// initialize temp file
-				TEMP_FILE = File.createTempFile(FILE_NAME, null, this.getExternalCacheDir());
-				// initialize output stream for temp file
-				OUTPUT_STREAM = new BufferedOutputStream(new FileOutputStream(TEMP_FILE));
-				// create input stream from source file
-				INPUT_STREAM = new FileInputStream(SOURCE_FILE);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.e("SBS","ERROR");
-		}
-	}
-
-	private void cryptOp(String path, String password, String action) {
-		// init crypto variables
-		this.initCrypto(path, password);
-
-		// create output stream which encrypts the data as
-		// it is written to it and writes out to the file
-		try {
-			if (action.equals(ENCRYPT_ACTION)) {
-				// create encrypted output stream
-				OutputStream encryptedOutputStream = CRYPTO.getCipherOutputStream(OUTPUT_STREAM, ENTITY);
-				// write to temp file
-				this.EncwriteFile(INPUT_STREAM, encryptedOutputStream);
-			} else if (action.equals(DECRYPT_ACTION)) {
-				// create decrypted input stream
-				InputStream decryptedInputStream = CRYPTO.getCipherInputStream(INPUT_STREAM, ENTITY);
-				// write to temp file
-				this.EncwriteFile(decryptedInputStream, OUTPUT_STREAM);
-			}
-
-			// delete original file after write
-			boolean deleted = SOURCE_FILE.delete();
-			if (deleted) {
-				File src = TEMP_FILE;
-				File dst = new File(SOURCE_URI.getPath());
-
-				this.EnccopyFile(src, dst);
-
-
-			} else {
-				Log.e("SBS","ERROR1");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CryptoInitializationException e) {
-			e.printStackTrace();
-		} catch (KeyChainException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Write encryped file
-	 * @param inputStream
-	 * @param outputStream
-     */
-	private void EncwriteFile(InputStream inputStream, OutputStream outputStream) {
-		try {
-			// create new byte object with source file length
-			byte[] data = new byte[(int) SOURCE_FILE.length()];
-
-			// read contents of source file byte by byte
-			int buffer = 0;
-			while ((buffer = inputStream.read(data)) > 0) {
-				// write contents to encrypted output stream
-				outputStream.write(data, 0, buffer);
-				outputStream.flush();
-			}
-
-			// close output stream
-			outputStream.close();
-			inputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Copy encrypted file
-	 * @param source
-	 * @param dest
-	 * @throws IOException
-     */
-	public void EnccopyFile(File source, File dest) throws IOException {
-		InputStream in = new FileInputStream(source);
-		OutputStream out = new FileOutputStream(dest);
-
-		// Transfer bytes from in to out
-		byte[] buf = new byte[1024];
-		int len;
-		while ((len = in.read(buf)) > 0) {
-			out.write(buf, 0, len);
-		}
-		in.close();
-		out.close();
 	}
 
 	@Override
 	protected void onStop() {
 
-		if (core != null)
-		{
-			destroyAlertWaiter();
-			core.stopAlerts();
-		}
+		//save any changes and close - user exited someother way
 
-		//check if backbutton is pressed
-		if( isBackButtonPressed ){
-			//encrypt moved to mupdf
-			if (this.superSecretKey != "") {
-				//encrypt only secured files
-				if( this.encFileStat )
-					this.cryptOp(this.docPath, this.superSecretKey, ENCRYPT_ACTION);
-			}
+		if (core != null && core.hasChanges()) {
+			core.save();
 		}else{
-
-			//save any changes and close - user exited someother way
-
-			if (core != null && core.hasChanges()) {
-				core.save();
-			}else{
-			}
-
-			//encrypt the file here
-			if (this.superSecretKey != "") {
-				//encrypt only secured files
-				if( this.encFileStat ){
-					//we want to remember to decrypt this file to avoid double encryption
-					this.exitedSomeOtherWay = true;
-					this.cryptOp(this.docPath, this.superSecretKey, ENCRYPT_ACTION);
-				}
-			}
-
 		}
 
 		super.onStop();
-
 	}
 
 	@Override
